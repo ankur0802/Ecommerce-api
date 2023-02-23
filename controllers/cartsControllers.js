@@ -6,12 +6,16 @@ const Product = require("../models/Product");
 exports.createCart = async (req, res) => {
     try {
       const newCart = new Cart(req.body);
-      const savedCart = await newCart.save();
       
       const selectedProduct = await Product.findById(req.body.products[0].productId);
       if(!selectedProduct) return res.status(400).send("Invalid Product");
 
-      if(selectedProduct.quantity > 0 && req.body.products[0].quantity < selectedProduct.quantity){
+      if(req.body.products[0].quantity > selectedProduct.quantity)
+      return res.status(400).send('Enter quantity ih higher than present stock');
+
+      const savedCart = await newCart.save();
+
+      if(selectedProduct.quantity > 0 ){
         Product.findOneAndUpdate({_id: req.body.products[0].productId}, {$inc: {quantity: -newCart.products[0].quantity}}, (err, updateData)=>{});
       }else{
 

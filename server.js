@@ -10,15 +10,11 @@ const orderRoute = require("./routers/orders");
 const error = require("./middleware/error");
 const connectDB = require("./database/connection");
 
-
-
 const PORT = process.env.PORT || 8000;
-
+app.use(express.json());
 
 // connecting database
 connectDB();
-
-app.use(express.json());
 
 app.use('/api/users', userRoute);
 app.use('/api/auth', authRoute);
